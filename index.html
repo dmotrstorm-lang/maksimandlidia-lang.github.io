@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Максим & Лидия</title>
 
+<!-- Preconnect для шрифтов -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
 
 <style>
@@ -13,6 +18,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -22,6 +28,7 @@ body {
   text-align: center;
   position: relative;
   padding: 0 10px;
+  animation: pageFade 1.2s ease;
 }
 
 /* Бумажная текстура */
@@ -35,6 +42,42 @@ body::before {
   z-index: 0;
 }
 
+/* Анимация появления страницы */
+@keyframes pageFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Убираем подсветку при тапе */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Анимация нажатия */
+button, .map-btn, .submit-btn {
+  transition: all 0.25s ease;
+}
+button:active, .map-btn:active, .submit-btn:active {
+  transform: scale(0.96);
+}
+.photo {
+  transition: transform 0.4s ease;
+}
+.photo:active {
+  transform: scale(1.05);
+}
+
+/* Плавное появление элементов при скролле */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease;
+}
+.fade-in.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .container {
   max-width: 680px;
   margin: 0 auto;
@@ -43,10 +86,58 @@ body::before {
   z-index: 2;
 }
 
+/* ===== INTRO SCREEN ===== */
+#intro {
+  position: fixed;
+  inset: 0;
+  background: #f2ede5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 1s ease;
+}
+.intro-content {
+  text-align: center;
+  animation: fadeIn 1.5s ease;
+}
+.intro-names {
+  font-size: 36px;
+  margin-bottom: 10px;
+  font-family: 'Oranienbaum', serif;
+}
+.intro-date {
+  font-family: 'Caveat', cursive;
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: #b79898;
+}
+#enterBtn {
+  background: #565e30;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 40px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#enterBtn:active {
+  transform: scale(0.96);
+}
+#intro.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
 /* ===== НЕРОВНАЯ ПОЛОСКА ===== */
 .wavy-stripe {
   position: relative;
-  margin: 20px 0;
+  margin: 40px 0;
   text-align: center;
 }
 .stripe-line {
@@ -79,7 +170,7 @@ body::before {
   white-space: nowrap;
 }
 
-/* ===== ФОТОГРАФИИ (адаптивные) ===== */
+/* ===== ФОТОГРАФИИ ===== */
 .photos {
   display: flex;
   justify-content: center;
@@ -106,7 +197,6 @@ body::before {
   border: 3px solid #b79898;
   transform: translateY(10px);
 }
-/* Эффект мазка */
 .side-photo, .center-photo {
   position: relative;
 }
@@ -144,7 +234,6 @@ body::before {
   align-items: center;
   justify-content: center;
 }
-.player-btn:active { background: rgba(86,94,48,0.15); }
 .song-name {
   font-family: 'Caveat', cursive;
   font-size: 14px;
@@ -179,6 +268,8 @@ body::before {
 .weekday {
   font-size: 12px;
   padding: 6px;
+  font-weight: 600;
+  color: #adbea5;
 }
 .calendar-day {
   font-size: 12px;
@@ -186,6 +277,8 @@ body::before {
 }
 .heart-day {
   position: relative;
+  color: #b79898;
+  font-weight: bold;
 }
 .heart-day::before {
   content: "❤";
@@ -194,6 +287,7 @@ body::before {
   left: 50%;
   transform: translateX(-50%) rotate(-5deg);
   font-size: 14px;
+  color: #b79898;
 }
 
 /* ===== МЕСТО ПРОВЕДЕНИЯ ===== */
@@ -210,6 +304,8 @@ body::before {
   font-size: 12px;
   max-width: 220px;
   z-index: 3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  text-align: left;
 }
 .place-img {
   width: 100%;
@@ -217,71 +313,147 @@ body::before {
   margin-bottom: 8px;
 }
 .map-btn {
+  display: inline-block;
+  background: #caa3a3;
+  color: white;
   padding: 8px 18px;
+  border-radius: 30px;
+  text-decoration: none;
   font-size: 13px;
   margin: 8px 0;
+  border: none;
+  cursor: pointer;
 }
 #map {
+  width: 100%;
   height: 200px;
+  border-radius: 12px;
   margin-top: 12px;
+  display: none;
 }
 
 /* ===== ПРОГРАММА ДНЯ ===== */
 .program-card {
+  background: #565e30;
+  border-radius: 28px;
   padding: 20px 15px;
   margin: 30px 0;
+  position: relative;
 }
 .program-title {
   font-size: 24px;
+  color: white;
   margin-bottom: 20px;
 }
+.program-list {
+  position: relative;
+  z-index: 2;
+}
 .program-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 10px 0;
 }
 .program-time {
+  color: white;
   font-size: 16px;
   width: 70px;
+  text-align: right;
   padding-right: 10px;
 }
 .program-desc {
+  color: white;
   font-size: 16px;
+  text-align: left;
+  flex: 1;
   padding-left: 10px;
 }
-.svg-dot { r: 4; }
+.program-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.svg-line {
+  stroke: #d2a5a5;
+  stroke-width: 2.5;
+  fill: none;
+}
+.svg-dot {
+  fill: #d2a5a5;
+}
 
 /* ===== ДРЕСС-КОД ===== */
 .dress-card {
   margin: 30px 0;
 }
 .palette {
+  display: flex;
+  justify-content: center;
   gap: 15px;
   margin: 20px 0;
+  flex-wrap: wrap;
 }
 .paint-splash {
   width: 55px;
   height: 55px;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  transform: rotate(var(--rot, 0deg));
 }
+.splash1 { background: #ffffff; border: 1px solid #ddd; --rot: -5deg; }
+.splash2 { background: #adbea5; --rot: 8deg; }
+.splash3 { background: #d09e97; --rot: -3deg; }
+.splash4 { background: #d2c4ac; --rot: 6deg; }
 .inspire-link {
+  font-family: 'Caveat', cursive;
   font-size: 16px;
+  color: #caa3a3;
+  text-decoration: none;
+  border-bottom: 1px dashed #caa3a3;
+  display: inline-block;
+  margin-top: 15px;
 }
 
 /* ===== ПОДСКАЗКИ ===== */
 .hint-grid {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+  text-align: left;
+  background: #f9f6f0;
+  padding: 20px;
+  border-radius: 28px;
   margin: 20px 0;
 }
 .hint-item h4 {
   font-size: 18px;
+  margin-bottom: 8px;
+  color: #b79898;
+  font-weight: normal;
 }
 .hint-item p {
   font-size: 14px;
+  color: #565e30;
 }
 .contact-oval {
+  display: inline-block;
+  background: #565e30;
   padding: 8px 20px;
+  border-radius: 60px;
+  margin: 10px 0;
 }
 .contact-oval a {
+  color: white;
+  text-decoration: none;
   font-size: 18px;
+}
+.contact-name {
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
 /* ===== ТАЙМЕР ===== */
@@ -290,316 +462,308 @@ body::before {
 }
 .timer-title {
   font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
 }
 .timer-numbers {
+  display: flex;
+  justify-content: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 .timer-block {
+  background: white;
   padding: 8px 12px;
+  border-radius: 20px;
   min-width: 65px;
 }
 .timer-num {
   font-size: 28px;
+  color: #b79898;
 }
 .timer-label {
+  font-family: 'Caveat', cursive;
   font-size: 12px;
+  color: #6f7458;
 }
 
 /* ===== АНКЕТА ===== */
 .form-card {
+  background: #4a553b;
+  border-radius: 28px;
   padding: 24px 18px;
+  color: white;
   margin: 30px 0;
 }
 .form-card .title {
   font-size: 24px;
+  margin-bottom: 20px;
+}
+.form-card input, .form-card select, .form-card textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 40px;
+  border: none;
+  font-family: 'Oranienbaum', serif;
 }
 .check-group {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
 }
 .check-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: normal;
   font-size: 14px;
 }
 .submit-btn {
-  font-size: 16px;
+  background: #caa3a3;
+  color: white;
+  border: none;
   padding: 10px;
+  width: 100%;
+  border-radius: 40px;
+  font-size: 16px;
+  cursor: pointer;
 }
 .chat-link {
-  font-size: 16px;
+  display: inline-block;
+  background: white;
   padding: 8px 20px;
+  border-radius: 40px;
+  text-decoration: none;
+  color: #565e30;
+  font-family: 'Caveat', cursive;
+  margin-top: 20px;
 }
-
+.success {
+  display: none;
+  margin-top: 15px;
+  padding: 8px;
+  background: #e0e7d6;
+  border-radius: 12px;
+  color: #4a553b;
+}
 footer {
   margin: 20px 0;
   font-size: 12px;
+  color: #6f7458;
 }
 
-/* ===== АДАПТАЦИЯ ДЛЯ САМЫХ МАЛЕНЬКИХ (до 480px) ===== */
+/* Адаптивность для маленьких экранов */
 @media (max-width: 480px) {
-  .container {
-    padding: 10px 8px;
-  }
-  .side-photo {
-    width: 80px;
-    height: 105px;
-  }
-  .center-photo {
-    width: 95px;
-    height: 125px;
-    transform: translateY(8px);
-  }
-  .player {
-    gap: 8px;
-    padding: 4px 12px;
-  }
-  .player-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-  }
-  .song-name {
-    font-size: 12px;
-    min-width: 80px;
-  }
-  .welcome-text {
-    font-size: 14px;
-  }
-  .welcome-text b {
-    font-size: 18px;
-  }
-  .calendar-header {
-    font-size: 24px;
-  }
-  .calendar-grid {
-    gap: 3px;
-  }
-  .weekday, .calendar-day {
-    font-size: 10px;
-    padding: 4px;
-  }
-  .heart-day::before {
-    font-size: 11px;
-    top: -8px;
-  }
-  .place-card {
-    font-size: 10px;
-    padding: 6px 10px;
-    max-width: 180px;
-  }
-  .program-time {
-    font-size: 14px;
-    width: 60px;
-  }
-  .program-desc {
-    font-size: 14px;
-  }
-  .paint-splash {
-    width: 45px;
-    height: 45px;
-  }
-  .timer-block {
-    min-width: 55px;
-    padding: 6px 8px;
-  }
-  .timer-num {
-    font-size: 24px;
-  }
-  .timer-label {
-    font-size: 10px;
-  }
-  .form-card {
-    padding: 18px 14px;
-  }
-  .form-card .title {
-    font-size: 22px;
-  }
-  input, select, textarea {
-    font-size: 14px;
-    padding: 10px;
-  }
-}
-
-/* Планшеты (600-800px) – чуть увеличиваем отступы */
-@media (min-width: 600px) and (max-width: 800px) {
-  .container {
-    max-width: 550px;
-  }
-  .side-photo {
-    width: 110px;
-    height: 140px;
-  }
-  .center-photo {
-    width: 130px;
-    height: 165px;
-  }
-}
-
-/* Для очень широких экранов центрируем контент */
-@media (min-width: 1000px) {
-  .container {
-    max-width: 750px;
-  }
+  .side-photo { width: 80px; height: 105px; }
+  .center-photo { width: 95px; height: 125px; transform: translateY(8px); }
+  .player { gap: 8px; padding: 4px 12px; }
+  .player-btn { width: 32px; height: 32px; font-size: 16px; }
+  .song-name { font-size: 12px; min-width: 80px; }
+  .calendar-header { font-size: 24px; }
+  .weekday, .calendar-day { font-size: 10px; padding: 4px; }
+  .heart-day::before { font-size: 11px; top: -8px; }
+  .program-time { font-size: 14px; width: 60px; }
+  .program-desc { font-size: 14px; }
+  .paint-splash { width: 45px; height: 45px; }
+  .timer-block { min-width: 55px; padding: 6px 8px; }
+  .timer-num { font-size: 24px; }
 }
 </style>
 </head>
 <body>
 
+<!-- INTRO ЭКРАН -->
+<div id="intro">
+  <div class="intro-content">
+    <div class="intro-names">Максим & Лидия</div>
+    <div class="intro-date">12 августа 2026</div>
+    <button id="enterBtn">Открыть приглашение</button>
+  </div>
+</div>
+
+<!-- ОСНОВНОЙ КОНТЕНТ (изначально скрыт) -->
+<div id="mainContent" style="display: none;">
 <div class="container">
 
-<!-- Верхняя полоска -->
-<div class="wavy-stripe">
-  <div class="stripe-line"></div>
-  <div class="stripe-text">одна жизнь на всю любовь</div>
-</div>
-
-<!-- Фото -->
-<div class="photos">
-  <img src="maxim.jpg" class="photo side-photo" alt="Максим">
-  <img src="center.jpg" class="photo center-photo" alt="Максим и Лидия">
-  <img src="lidiya.jpg" class="photo side-photo" alt="Лидия">
-</div>
-
-<!-- Плеер -->
-<div class="player">
-  <button class="player-btn" id="prevBtn"><i class="fas fa-backward-step"></i></button>
-  <button class="player-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
-  <button class="player-btn" id="nextBtn"><i class="fas fa-forward-step"></i></button>
-  <span class="song-name" id="songName">Yes to Heaven</span>
-</div>
-
-<div class="welcome-text">
-  <b>ДОРОГИЕ БЛИЗКИЕ И РОДНЫЕ!</b>
-  Совсем скоро в нашей жизни состоится важное событие — день свадьбы.<br>
-  Мы будем счастливы разделить этот день с вами.
-</div>
-
-<div class="wavy-stripe">
-  <div class="stripe-line"></div>
-  <div class="stripe-text">одна жизнь на всю любовь</div>
-</div>
-
-<!-- Календарь -->
-<div class="calendar-header">12 / 08 / 2026</div>
-<div class="calendar-grid" id="calendarGrid"></div>
-
-<!-- Место проведения -->
-<div class="place-section">
-  <div class="place-card">
-    <strong>О.Любви</strong><br>
-    по адресу<br>
-    Дмитровский гор.округ Ольгово
+  <div class="wavy-stripe fade-in">
+    <div class="stripe-line"></div>
+    <div class="stripe-text">одна жизнь на всю любовь</div>
   </div>
-  <img src="place.jpg" class="place-img" alt="Локация">
-  <button class="map-btn" id="showMapBtn">Построить маршрут</button>
-  <div id="map"></div>
-</div>
 
-<!-- Программа дня -->
-<div class="program-card" id="programCard">
-  <div class="program-title">Программа дня</div>
-  <div class="program-list" id="programList">
-    <div class="program-item"><div class="program-time">14:00</div><div class="program-desc">Сбор гостей</div></div>
-    <div class="program-item"><div class="program-time">15:00</div><div class="program-desc">Церемония</div></div>
-    <div class="program-item"><div class="program-time">16:00</div><div class="program-desc">Ужин</div></div>
-    <div class="program-item"><div class="program-time">22:00</div><div class="program-desc">Завершение</div></div>
+  <div class="photos fade-in">
+    <img src="maxim.jpg" class="photo side-photo" alt="Максим">
+    <img src="center.jpg" class="photo center-photo" alt="Максим и Лидия">
+    <img src="lidiya.jpg" class="photo side-photo" alt="Лидия">
   </div>
-  <svg class="program-svg" id="programSvg"></svg>
-</div>
 
-<div class="wavy-stripe">
-  <div class="stripe-line"></div>
-  <div class="stripe-text">одна жизнь на всю любовь</div>
-</div>
-
-<!-- Дресс-код -->
-<div class="dress-card">
-  <div style="font-size:26px; margin-bottom:15px;">ДРЕСС-КОД</div>
-  <p>Выбирайте однотонные наряды из уютных материалов и придерживайтесь цветовой палитры нашего праздника.</p>
-  <div class="palette">
-    <div class="paint-splash splash1"></div>
-    <div class="paint-splash splash2"></div>
-    <div class="paint-splash splash3"></div>
-    <div class="paint-splash splash4"></div>
+  <div class="player fade-in">
+    <button class="player-btn" id="prevBtn"><i class="fas fa-backward-step"></i></button>
+    <button class="player-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
+    <button class="player-btn" id="nextBtn"><i class="fas fa-forward-step"></i></button>
+    <span class="song-name" id="songName">Yes to Heaven</span>
   </div>
-  <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
-  <a href="#" class="inspire-link" id="inspirationLink"><i class="fas fa-palette"></i> ДЛЯ ВДОХНОВЕНИЯ →</a>
-</div>
 
-<!-- Подсказки -->
-<div class="hint-grid">
-  <div class="hint-item"><h4>Что дарить?</h4><p>Мы не хотим обременять вас поисками подарка, поэтому будем рады вкладу в наш семейный бюджет. Мы просим не дарить цветы, так как наша кошка Чмоша не даст нам насладиться их красотой. Но если хочется чем-то сопроводить подарок, лучше выберите бутылочку благородного напитка для нашей домашней коллекции, здесь кошка препятствием не станет.</p></div>
-  <div class="hint-item"><h4>Формат торжества</h4><p>Этот день для нас особенный и, к сожалению, не предусматривает детских зон и развлечений. Пожалуйста, позаботьтесь об этом заранее и позвольте себе отдохнуть в кругу взрослых.</p></div>
-  <div class="hint-item"><h4>Трансфер</h4><p>В конце вечера будет организован трансфер от места проведения до микрорайона Левобережный. Отметьте необходимость трансфера в анкете.</p></div>
-  <div class="hint-item"><h4>По всем вопросам</h4><p>Дни перед праздником для нас особенно трепетны, поэтому решение всех вопросов мы делегировали организатору Анне. Без стеснения обращайтесь к ней.</p></div>
-</div>
-<div class="contact-oval">
-  <a href="tel:+79107403171">+7 (910) 740-31-71</a>
-</div>
-<div class="contact-name">Анна</div>
-
-<div class="wavy-stripe">
-  <div class="stripe-line"></div>
-  <div class="stripe-text">одна жизнь на всю любовь</div>
-</div>
-
-<!-- Таймер -->
-<div class="timer-section">
-  <div class="timer-title">СОВСЕМ СКОРО...</div>
-  <div class="timer-numbers" id="countdown">
-    <div class="timer-block"><span class="timer-num" id="days">0</span><br><span class="timer-label">дней</span></div>
-    <div class="timer-block"><span class="timer-num" id="hours">0</span><br><span class="timer-label">часов</span></div>
-    <div class="timer-block"><span class="timer-num" id="minutes">0</span><br><span class="timer-label">минут</span></div>
-    <div class="timer-block"><span class="timer-num" id="seconds">0</span><br><span class="timer-label">секунд</span></div>
+  <div class="welcome-text fade-in">
+    <b>ДОРОГИЕ БЛИЗКИЕ И РОДНЫЕ!</b>
+    Совсем скоро в нашей жизни состоится важное событие — день свадьбы.<br>
+    Мы будем счастливы разделить этот день с вами.
   </div>
-</div>
 
-<!-- Анкета -->
-<div class="form-card">
-  <div class="title" style="color:white;">АНКЕТА ГОСТЯ</div>
-  <form id="rsvpForm">
-    <input type="text" id="fullname" placeholder="Ваше ФИО *" required>
-    <select id="attendance" required>
-      <option value="">Подтвердите присутствие *</option>
-      <option value="Я буду!">Я буду!</option>
-      <option value="Нет, но отправлю подарок">Нет, но отправлю подарок</option>
-    </select>
-    <p style="font-size:12px; margin-top:-5px;">Если не можете ответить сейчас, подтвердите до 01.05.2026.</p>
+  <div class="wavy-stripe fade-in">
+    <div class="stripe-line"></div>
+    <div class="stripe-text">одна жизнь на всю любовь</div>
+  </div>
 
-    <div style="margin:15px 0 10px;">Предпочтения по напиткам (можно несколько):</div>
-    <div class="check-group">
-      <label><input type="checkbox" value="шампанское"> шампанское</label>
-      <label><input type="checkbox" value="вино белое"> вино белое</label>
-      <label><input type="checkbox" value="вино красное"> вино красное</label>
-      <label><input type="checkbox" value="водка"> водка</label>
-      <label><input type="checkbox" value="коньяк"> коньяк</label>
-      <label><input type="checkbox" value="самогон"> самогон</label>
-      <label><input type="checkbox" value="безалкогольное"> безалкогольное</label>
+  <div class="calendar-header fade-in">12 / 08 / 2026</div>
+  <div class="calendar-grid fade-in" id="calendarGrid"></div>
+
+  <div class="place-section fade-in">
+    <div class="place-card">
+      <strong>О.Любви</strong><br>
+      по адресу<br>
+      Дмитровский гор.округ Ольгово
     </div>
+    <img src="place.jpg" class="place-img" alt="Локация">
+    <button class="map-btn" id="showMapBtn">Показать карту</button>
+    <div id="map"></div>
+  </div>
 
-    <select id="transfer">
-      <option value="Да, нужен">Нужен трансфер?</option>
-      <option value="Да, нужен">Да, нужен</option>
-      <option value="Нет, не нужен">Нет, не нужен</option>
-    </select>
+  <div class="program-card fade-in" id="programCard">
+    <div class="program-title">Программа дня</div>
+    <div class="program-list" id="programList">
+      <div class="program-item"><div class="program-time">14:00</div><div class="program-desc">Сбор гостей</div></div>
+      <div class="program-item"><div class="program-time">15:00</div><div class="program-desc">Церемония</div></div>
+      <div class="program-item"><div class="program-time">16:00</div><div class="program-desc">Ужин</div></div>
+      <div class="program-item"><div class="program-time">22:00</div><div class="program-desc">Завершение</div></div>
+    </div>
+    <svg class="program-svg" id="programSvg"></svg>
+  </div>
 
-    <textarea id="song" rows="2" placeholder="Ваш любимый трек 🎵"></textarea>
-    <textarea id="comment" rows="2" placeholder="Комментарий"></textarea>
+  <div class="wavy-stripe fade-in">
+    <div class="stripe-line"></div>
+    <div class="stripe-text">одна жизнь на всю любовь</div>
+  </div>
 
-    <button type="submit" class="submit-btn">Отправить ответ</button>
-    <div class="success" id="successMessage">Спасибо! Мы ждём вас ❤️</div>
-  </form>
-  <a href="#" class="chat-link" id="chatLink"><i class="fab fa-telegram"></i> Ссылка на чат</a>
+  <div class="dress-card fade-in">
+    <div style="font-size:26px; margin-bottom:15px;">ДРЕСС-КОД</div>
+    <p>Выбирайте однотонные наряды из уютных материалов и придерживайтесь цветовой палитры нашего праздника.</p>
+    <div class="palette">
+      <div class="paint-splash splash1"></div>
+      <div class="paint-splash splash2"></div>
+      <div class="paint-splash splash3"></div>
+      <div class="paint-splash splash4"></div>
+    </div>
+    <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
+    <a href="#" class="inspire-link" id="inspirationLink"><i class="fas fa-palette"></i> ДЛЯ ВДОХНОВЕНИЯ →</a>
+  </div>
+
+  <div class="hint-grid fade-in">
+    <div class="hint-item"><h4>Что дарить?</h4><p>Мы не хотим обременять вас поисками подарка, поэтому будем рады вкладу в наш семейный бюджет. Мы просим не дарить цветы, так как наша кошка Чмоша не даст нам насладиться их красотой. Но если хочется чем-то сопроводить подарок, лучше выберите бутылочку благородного напитка для нашей домашней коллекции, здесь кошка препятствием не станет.</p></div>
+    <div class="hint-item"><h4>Формат торжества</h4><p>Этот день для нас особенный и, к сожалению, не предусматривает детских зон и развлечений. Пожалуйста, позаботьтесь об этом заранее и позвольте себе отдохнуть в кругу взрослых.</p></div>
+    <div class="hint-item"><h4>Трансфер</h4><p>В конце вечера будет организован трансфер от места проведения до микрорайона Левобережный. Отметьте необходимость трансфера в анкете.</p></div>
+    <div class="hint-item"><h4>По всем вопросам</h4><p>Дни перед праздником для нас особенно трепетны, поэтому решение всех вопросов мы делегировали организатору Анне. Без стеснения обращайтесь к ней.</p></div>
+  </div>
+  <div class="contact-oval fade-in">
+    <a href="tel:+79107403171">+7 (910) 740-31-71</a>
+  </div>
+  <div class="contact-name fade-in">Анна</div>
+
+  <div class="wavy-stripe fade-in">
+    <div class="stripe-line"></div>
+    <div class="stripe-text">одна жизнь на всю любовь</div>
+  </div>
+
+  <div class="timer-section fade-in">
+    <div class="timer-title">СОВСЕМ СКОРО...</div>
+    <div class="timer-numbers" id="countdown">
+      <div class="timer-block"><span class="timer-num" id="days">0</span><br><span class="timer-label">дней</span></div>
+      <div class="timer-block"><span class="timer-num" id="hours">0</span><br><span class="timer-label">часов</span></div>
+      <div class="timer-block"><span class="timer-num" id="minutes">0</span><br><span class="timer-label">минут</span></div>
+      <div class="timer-block"><span class="timer-num" id="seconds">0</span><br><span class="timer-label">секунд</span></div>
+    </div>
+  </div>
+
+  <div class="form-card fade-in">
+    <div class="title">АНКЕТА ГОСТЯ</div>
+    <form id="rsvpForm">
+      <input type="text" id="fullname" placeholder="Ваше ФИО *" required>
+      <select id="attendance" required>
+        <option value="">Подтвердите присутствие *</option>
+        <option value="Я буду!">Я буду!</option>
+        <option value="Нет, но отправлю подарок">Нет, но отправлю подарок</option>
+      </select>
+      <p style="font-size:12px; margin-top:-5px;">Если не можете ответить сейчас, подтвердите до 01.05.2026.</p>
+
+      <div style="margin:15px 0 10px;">Предпочтения по напиткам (можно несколько):</div>
+      <div class="check-group">
+        <label><input type="checkbox" value="шампанское"> шампанское</label>
+        <label><input type="checkbox" value="вино белое"> вино белое</label>
+        <label><input type="checkbox" value="вино красное"> вино красное</label>
+        <label><input type="checkbox" value="водка"> водка</label>
+        <label><input type="checkbox" value="коньяк"> коньяк</label>
+        <label><input type="checkbox" value="самогон"> самогон</label>
+        <label><input type="checkbox" value="безалкогольное"> безалкогольное</label>
+      </div>
+
+      <select id="transfer">
+        <option value="Да, нужен">Нужен трансфер?</option>
+        <option value="Да, нужен">Да, нужен</option>
+        <option value="Нет, не нужен">Нет, не нужен</option>
+      </select>
+
+      <textarea id="song" rows="2" placeholder="Ваш любимый трек 🎵"></textarea>
+      <textarea id="comment" rows="2" placeholder="Комментарий"></textarea>
+
+      <button type="submit" class="submit-btn">Отправить ответ</button>
+      <div class="success" id="successMessage">Спасибо! Мы ждём вас ❤️</div>
+    </form>
+    <a href="#" class="chat-link" id="chatLink"><i class="fab fa-telegram"></i> Ссылка на чат</a>
+  </div>
+
+  <footer class="fade-in">
+    Максим & Лидия<br>
+    12 августа 2026
+  </footer>
 </div>
-
-<footer>
-  Максим & Лидия<br>
-  12 августа 2026
-</footer>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script>
-// Календарь
+// ========== INTRO ЛОГИКА ==========
+const intro = document.getElementById('intro');
+const mainContent = document.getElementById('mainContent');
+const enterBtn = document.getElementById('enterBtn');
+
+enterBtn.addEventListener('click', () => {
+  intro.classList.add('hide');
+  setTimeout(() => {
+    intro.style.display = 'none';
+    mainContent.style.display = 'block';
+    document.body.style.overflow = 'auto';
+    // инициируем наблюдатель после появления контента
+    initObserver();
+    // перерисовываем S-кривую
+    setTimeout(drawSCurve, 100);
+  }, 1000);
+});
+
+// ========== ПЛАВНОЕ ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ==========
+function initObserver() {
+  const fadeElements = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+      }
+    });
+  }, { threshold: 0.2 });
+  fadeElements.forEach(el => observer.observe(el));
+}
+
+// ========== КАЛЕНДАРЬ ==========
 function buildCalendar() {
   const year = 2026, month = 7;
   const firstDay = new Date(year, month, 1).getDay();
@@ -629,7 +793,7 @@ function buildCalendar() {
 }
 buildCalendar();
 
-// Таймер
+// ========== ТАЙМЕР ==========
 function updateCountdown() {
   const target = new Date("August 12, 2026 00:00:00").getTime();
   const now = new Date().getTime();
@@ -644,7 +808,7 @@ function updateCountdown() {
 setInterval(updateCountdown,1000);
 updateCountdown();
 
-// Музыка
+// ========== ПЛЕЕР ==========
 const audio = new Audio("music.mp3");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const prevBtn = document.getElementById("prevBtn");
@@ -695,12 +859,15 @@ nextBtn.addEventListener("click", nextTrack);
 audio.addEventListener("ended", nextTrack);
 loadTrack(0);
 
-// Карта
+// ========== КАРТА (показать/скрыть) ==========
 let mapInitialized = false;
-document.getElementById("showMapBtn").addEventListener("click", () => {
-  const mapDiv = document.getElementById("map");
+const showMapBtn = document.getElementById("showMapBtn");
+const mapDiv = document.getElementById("map");
+
+showMapBtn.addEventListener("click", () => {
   if (mapDiv.style.display === "none" || !mapDiv.style.display) {
     mapDiv.style.display = "block";
+    showMapBtn.textContent = "Скрыть карту";
     if (!mapInitialized) {
       ymaps.ready(() => {
         let map = new ymaps.Map("map", { center: [56.055, 37.138], zoom: 15, controls: ['zoomControl'] });
@@ -711,11 +878,12 @@ document.getElementById("showMapBtn").addEventListener("click", () => {
     }
   } else {
     mapDiv.style.display = "none";
+    showMapBtn.textContent = "Показать карту";
   }
 });
-document.getElementById("map").style.display = "none";
+mapDiv.style.display = "none";
 
-// S-образная линия
+// ========== S-ОБРАЗНАЯ ЛИНИЯ ДЛЯ ПРОГРАММЫ ==========
 function drawSCurve() {
   const card = document.getElementById("programCard");
   const svg = document.getElementById("programSvg");
@@ -751,23 +919,18 @@ function drawSCurve() {
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.setAttribute("d", pathData);
   path.classList.add("svg-line");
-  path.setAttribute("stroke", "#d2a5a5");
-  path.setAttribute("stroke-width", "2.5");
-  path.setAttribute("fill", "none");
   svg.appendChild(path);
   points.forEach(p => {
     const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circle.setAttribute("cx", p.x);
     circle.setAttribute("cy", p.y);
-    circle.setAttribute("r", 4);
-    circle.setAttribute("fill", "#d2a5a5");
+    circle.classList.add("svg-dot");
     svg.appendChild(circle);
   });
 }
-window.addEventListener("load", () => { setTimeout(drawSCurve, 50); });
-window.addEventListener("resize", drawSCurve);
+window.addEventListener("resize", () => { if (mainContent.style.display !== 'none') drawSCurve(); });
 
-// Форма
+// ========== ФОРМА ==========
 const form = document.getElementById("rsvpForm");
 const successMsg = document.getElementById("successMessage");
 form.addEventListener("submit", (e) => {
