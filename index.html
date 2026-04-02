@@ -554,6 +554,149 @@ footer {
   font-size: 12px;
   color: #6f7458;
 }
+/* ===== АНКЕТА (улучшенная адаптация) ===== */
+.form-card {
+  background: #4a553b;
+  border-radius: 28px;
+  padding: 24px 18px;
+  color: white;
+  margin: 30px 0;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.form-card .title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.form-card input,
+.form-card select,
+.form-card textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px 15px;
+  border-radius: 40px;
+  border: none;
+  font-family: 'Oranienbaum', serif;
+  font-size: 16px;
+  box-sizing: border-box;
+  background: white;
+  color: #565e30;
+}
+.form-card textarea {
+  border-radius: 20px;
+  resize: vertical;
+}
+.check-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  margin: 15px 0;
+}
+.check-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  padding: 6px 14px;
+  border-radius: 40px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+.check-group label:active {
+  transform: scale(0.96);
+}
+.check-group input {
+  width: auto;
+  margin: 0;
+  transform: scale(1.1);
+  accent-color: #caa3a3;
+}
+.submit-btn {
+  background: #caa3a3;
+  color: white;
+  border: none;
+  padding: 14px;
+  width: 100%;
+  border-radius: 40px;
+  font-size: 18px;
+  font-family: 'Oranienbaum', serif;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+.submit-btn:active {
+  transform: scale(0.97);
+}
+.chat-link {
+  display: inline-block;
+  background: white;
+  padding: 10px 24px;
+  border-radius: 40px;
+  text-decoration: none;
+  color: #565e30;
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  margin-top: 20px;
+  transition: 0.2s;
+}
+.chat-link:active {
+  transform: scale(0.97);
+}
+.success {
+  display: none;
+  margin-top: 15px;
+  padding: 10px;
+  background: #e0e7d6;
+  border-radius: 20px;
+  color: #4a553b;
+  text-align: center;
+}
+
+/* Дополнительная адаптация для узких экранов (до 480px) */
+@media (max-width: 480px) {
+  .form-card {
+    padding: 18px 14px;
+  }
+  .form-card .title {
+    font-size: 22px;
+  }
+  .form-card input,
+  .form-card select,
+  .form-card textarea {
+    padding: 10px 12px;
+    font-size: 14px;
+    margin: 8px 0;
+  }
+  .check-group {
+    gap: 8px;
+  }
+  .check-group label {
+    padding: 5px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .submit-btn {
+    padding: 12px;
+    font-size: 16px;
+  }
+  .chat-link {
+    padding: 8px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Для очень маленьких экранов (до 380px) чекбоксы могут не помещаться, разрешаем перенос */
+@media (max-width: 380px) {
+  .check-group label {
+    white-space: normal;
+    word-break: keep-all;
+  }
+}
 
 /* Адаптивность для маленьких экранов */
 @media (max-width: 480px) {
