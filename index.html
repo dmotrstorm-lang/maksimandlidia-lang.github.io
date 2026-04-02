@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Максим & Лидия</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Oranienbaum', serif;
+  background: #f2ede5;
+  color: #565e30;
+  text-align: center;
+  position: relative;
+  padding: 0 10px;
+}
+
+/* Бумажная текстура фона */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 15px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== НЕРОВНАЯ ПОЛОСКА (с мазками и надписью) ===== */
+.wavy-stripe {
+  position: relative;
+  margin: 30px 0;
+  text-align: center;
+}
+.stripe-line {
+  width: 100%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #caa3a3, #caa3a3 8px, transparent 8px, transparent 18px);
+  position: relative;
+}
+.stripe-line::before,
+.stripe-line::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  height: 6px;
+  background: #caa3a3;
+  border-radius: 50%;
+}
+.stripe-line::before { left: 5%; transform: rotate(-5deg); }
+.stripe-line::after { right: 5%; transform: rotate(5deg); }
+.stripe-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #f2ede5;
+  padding: 0 15px;
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  color: #caa3a3;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* ===== ФОТОГРАФИИ ===== */
+.photos {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  margin: 30px 0 20px;
+}
+.photo {
+  width: 130px;
+  height: 170px;
+  object-fit: cover;
+  position: relative;
+}
+.side-photo {
+  border: 3px solid #565e30;
+  transform: rotate(-3deg);
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+}
+.side-photo:last-child {
+  transform: rotate(3deg);
+}
+.center-photo {
+  width: 150px;
+  height: 195px;
+  border: 3px solid #b79898;
+  transform: translateY(15px);
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+}
+/* Эффект мазка кисти для рамок */
+.side-photo, .center-photo {
+  position: relative;
+}
+.side-photo::after, .center-photo::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 2px solid rgba(202, 163, 163, 0.4);
+  border-radius: 20px;
+  pointer-events: none;
+  transform: rotate(1deg);
+}
+
+/* ===== ПЛЕЕР (простой) ===== */
+.player {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255,255,240,0.7);
+  backdrop-filter: blur(4px);
+  padding: 6px 18px;
+  border-radius: 40px;
+  margin: 15px 0 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.player-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #565e30;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.player-btn:hover {
+  background: rgba(86,94,48,0.1);
+}
+.song-name {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: #565e30;
+  min-width: 110px;
+}
+
+/* Приветственный текст */
+.welcome-text {
+  margin: 20px auto;
+  max-width: 500px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #565e30;
+}
+.welcome-text b {
+  font-size: 22px;
+  font-weight: normal;
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* ===== КАЛЕНДАРЬ ===== */
+.calendar-header {
+  font-size: 30px;
+  margin: 20px 0 15px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  max-width: 450px;
+  margin: 0 auto;
+}
+.weekday {
+  font-weight: 600;
+  color: #adbea5;
+  padding: 8px;
+  font-size: 14px;
+}
+.calendar-day {
+  padding: 8px;
+  font-size: 14px;
+  position: relative;
+}
+.heart-day {
+  position: relative;
+  color: #b79898;
+  font-weight: bold;
+}
+.heart-day::before {
+  content: "❤";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-5deg);
+  font-size: 18px;
+  color: #b79898;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.05);
+}
+
+/* ===== МЕСТО ПРОВЕДЕНИЯ ===== */
+.place-section {
+  margin: 50px 0;
+  position: relative;
+}
+.place-card {
+  position: absolute;
+  top: -15px;
+  left: 10px;
+  background: white;
+  padding: 12px 18px;
+  border: 1px solid #d8d0c6;
+  transform: rotate(-4deg);
+  font-size: 14px;
+  z-index: 3;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  text-align: left;
+  max-width: 260px;
+}
+.place-img {
+  width: 100%;
+  border-radius: 12px;
+  filter: sepia(0.1);
+  margin-bottom: 12px;
+}
+.map-btn {
+  display: inline-block;
+  background: #caa3a3;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 14px;
+  margin: 10px 0;
+  transition: 0.2s;
+}
+.map-btn:hover {
+  background: #b79898;
+}
+#map {
+  width: 100%;
+  height: 240px;
+  border-radius: 12px;
+  margin-top: 15px;
+  display: none;
+  filter: grayscale(0.2);
+}
+
+/* ===== ПРОГРАММА ДНЯ ===== */
+.program-card {
+  background: #565e30;
+  border-radius: 28px;
+  padding: 30px 20px;
+  margin: 40px 0;
+  position: relative;
+}
+.program-title {
+  font-size: 28px;
+  color: white;
+  margin-bottom: 30px;
+  font-family: 'Oranienbaum', serif;
+}
+.program-list {
+  position: relative;
+  z-index: 2;
+}
+.program-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+.program-time {
+  color: white;
+  font-size: 18px;
+  width: 80px;
+  text-align: right;
+  padding-right: 15px;
+}
+.program-desc {
+  color: white;
+  font-size: 18px;
+  text-align: left;
+  flex: 1;
+  padding-left: 15px;
+}
+.program-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.svg-line {
+  stroke: #d2a5a5;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-dasharray: 6 4;
+}
+.svg-dot {
+  fill: #d2a5a5;
+  r: 5;
+}
+
+/* ===== ДРЕСС-КОД (мазки) ===== */
+.dress-card {
+  margin: 50px 0;
+  text-align: center;
+}
+.palette {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 25px 0;
+  flex-wrap: wrap;
+}
+.paint-splash {
+  width: 70px;
+  height: 70px;
+  background: #fff;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  transform: rotate(var(--rot, 0deg));
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.05);
+}
+.splash1 { background: #ffffff; border: 1px solid #ddd; --rot: -5deg; }
+.splash2 { background: #adbea5; --rot: 8deg; }
+.splash3 { background: #d09e97; --rot: -3deg; }
+.splash4 { background: #d2c4ac; --rot: 6deg; }
+.inspire-link {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  color: #caa3a3;
+  text-decoration: none;
+  border-bottom: 1px dashed #caa3a3;
+  display: inline-block;
+  margin-top: 15px;
+}
+
+/* ===== ПОДСКАЗКИ ===== */
+.hint-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  text-align: left;
+  background: #f9f6f0;
+  padding: 30px;
+  border-radius: 28px;
+  margin: 30px 0;
+}
+.hint-item h4 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  color: #b79898;
+  font-weight: normal;
+}
+.hint-item p {
+  color: #565e30;
+  font-size: 15px;
+}
+.contact-oval {
+  display: inline-block;
+  background: #565e30;
+  padding: 12px 30px;
+  border-radius: 60px;
+  margin: 20px 0 10px;
+}
+.contact-oval a {
+  color: white;
+  text-decoration: none;
+  font-size: 22px;
+}
+.contact-name {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* ===== ТАЙМЕР ===== */
+.timer-section {
+  margin: 40px 0;
+}
+.timer-title {
+  font-size: 20px;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+}
+.timer-numbers {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.timer-block {
+  background: white;
+  padding: 12px 18px;
+  border-radius: 20px;
+  min-width: 80px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.timer-num {
+  font-size: 36px;
+  font-weight: normal;
+  color: #b79898;
+}
+.timer-label {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: #6f7458;
+}
+
+/* ===== АНКЕТА ===== */
+.form-card {
+  background: #4a553b;
+  border-radius: 28px;
+  padding: 32px;
+  color: white;
+  margin: 40px 0;
+}
+.form-card input, .form-card select, .form-card textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 40px;
+  border: none;
+  font-family: 'Oranienbaum', serif;
+}
+.check-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 15px 0;
+}
+.check-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: normal;
+}
+.submit-btn {
+  background: #caa3a3;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 40px;
+  font-size: 18px;
+  font-family: 'Oranienbaum', serif;
+  cursor: pointer;
+}
+.chat-link {
+  display: inline-block;
+  background: white;
+  padding: 10px 24px;
+  border-radius: 40px;
+  text-decoration: none;
+  color: #565e30;
+  font-family: 'Caveat', cursive;
+  margin-top: 20px;
+}
+.success {
+  display: none;
+  margin-top: 15px;
+  padding: 8px;
+  background: #e0e7d6;
+  border-radius: 12px;
+  color: #4a553b;
+}
+footer {
+  margin: 30px 0;
+  font-size: 14px;
+  color: #6f7458;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Верхняя неровная полоска -->
+<div class="wavy-stripe">
+  <div class="stripe-line"></div>
+  <div class="stripe-text">одна жизнь на всю любовь</div>
+</div>
+
+<!-- Фотографии -->
+<div class="photos">
+  <img src="https://drive.google.com/thumbnail?id=1nKFpqOO2utb9CGkQi-IGyksPpMxrE3Qq&sz=w800" class="photo side-photo" alt="Максим">
+  <img src="photos/center.jpg" class="photo center-photo" alt="Максим и Лидия">
+  <img src="lidiya.jpg" class="photo side-photo" alt="Лидия">
+</div>
+
+<!-- Плеер -->
+<div class="player">
+  <button class="player-btn" id="prevBtn"><i class="fas fa-backward-step"></i></button>
+  <button class="player-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
+  <button class="player-btn" id="nextBtn"><i class="fas fa-forward-step"></i></button>
+  <span class="song-name" id="songName">Yes to Heaven</span>
+</div>
+
+<!-- Приветственный текст -->
+<div class="welcome-text">
+  <b>ДОРОГИЕ БЛИЗКИЕ И РОДНЫЕ!</b>
+  Совсем скоро в нашей жизни состоится важное событие — день свадьбы.<br>
+  Мы будем счастливы разделить этот день с вами.
+</div>
+
+<!-- Нижняя неровная полоска -->
+<div class="wavy-stripe">
+  <div class="stripe-line"></div>
+  <div class="stripe-text">одна жизнь на всю любовь</div>
+</div>
+
+<!-- Календарь -->
+<div class="calendar-header">12 / 08 / 2026</div>
+<div class="calendar-grid" id="calendarGrid"></div>
+
+<!-- Место проведения -->
+<div class="place-section">
+  <div class="place-card">
+    <strong>О.Любви</strong><br>
+    по адресу<br>
+    Дмитровский гор.округ Ольгово
+  </div>
+  <img src="place.jpg" class="place-img" alt="Локация">
+  <button class="map-btn" id="showMapBtn">Построить маршрут</button>
+  <div id="map"></div>
+</div>
+
+<!-- Программа дня -->
+<div class="program-card" id="programCard">
+  <div class="program-title">Программа дня</div>
+  <div class="program-list" id="programList">
+    <div class="program-item"><div class="program-time">14:00</div><div class="program-desc">Сбор гостей</div></div>
+    <div class="program-item"><div class="program-time">15:00</div><div class="program-desc">Церемония</div></div>
+    <div class="program-item"><div class="program-time">16:00</div><div class="program-desc">Ужин</div></div>
+    <div class="program-item"><div class="program-time">22:00</div><div class="program-desc">Завершение</div></div>
+  </div>
+  <svg class="program-svg" id="programSvg"></svg>
+</div>
+
+<!-- Неровная полоска -->
+<div class="wavy-stripe">
+  <div class="stripe-line"></div>
+  <div class="stripe-text">одна жизнь на всю любовь</div>
+</div>
+
+<!-- Дресс-код (мазки) -->
+<div class="dress-card">
+  <div class="title" style="font-size:26px; margin-bottom:20px;">ДРЕСС-КОД</div>
+  <p>Выбирайте однотонные наряды из уютных материалов и придерживайтесь цветовой палитры нашего праздника.</p>
+  <div class="palette">
+    <div class="paint-splash splash1"></div>
+    <div class="paint-splash splash2"></div>
+    <div class="paint-splash splash3"></div>
+    <div class="paint-splash splash4"></div>
+  </div>
+  <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
+  <a href="#" class="inspire-link" id="inspirationLink"><i class="fas fa-palette"></i> ДЛЯ ВДОХНОВЕНИЯ →</a>
+</div>
+
+<!-- Подсказки -->
+<div class="hint-grid">
+  <div class="hint-item"><h4>Что дарить?</h4><p>Мы не хотим обременять вас поисками подарка, поэтому будем рады вкладу в наш семейный бюджет. Мы просим не дарить цветы, так как наша кошка Чмоша не даст нам насладиться их красотой. Но если хочется чем-то сопроводить подарок, лучше выберите бутылочку благородного напитка для нашей домашней коллекции, здесь кошка препятствием не станет.</p></div>
+  <div class="hint-item"><h4>Формат торжества</h4><p>Этот день для нас особенный и, к сожалению, не предусматривает детских зон и развлечений. Пожалуйста, позаботьтесь об этом заранее и позвольте себе отдохнуть в кругу взрослых.</p></div>
+  <div class="hint-item"><h4>Трансфер</h4><p>В конце вечера будет организован трансфер от места проведения до микрорайона Левобережный. Отметьте необходимость трансфера в анкете.</p></div>
+  <div class="hint-item"><h4>По всем вопросам</h4><p>Дни перед праздником для нас особенно трепетны, поэтому решение всех вопросов мы делегировали организатору Анне. Без стеснения обращайтесь к ней.</p></div>
+</div>
+<div class="contact-oval">
+  <a href="tel:+79107403171">+7 (910) 740-31-71</a>
+</div>
+<div class="contact-name">Анна</div>
+
+<!-- Неровная полоска -->
+<div class="wavy-stripe">
+  <div class="stripe-line"></div>
+  <div class="stripe-text">одна жизнь на всю любовь</div>
+</div>
+
+<!-- Таймер -->
+<div class="timer-section">
+  <div class="timer-title">СОВСЕМ СКОРО...</div>
+  <div class="timer-numbers" id="countdown">
+    <div class="timer-block"><span class="timer-num" id="days">0</span><br><span class="timer-label">дней</span></div>
+    <div class="timer-block"><span class="timer-num" id="hours">0</span><br><span class="timer-label">часов</span></div>
+    <div class="timer-block"><span class="timer-num" id="minutes">0</span><br><span class="timer-label">минут</span></div>
+    <div class="timer-block"><span class="timer-num" id="seconds">0</span><br><span class="timer-label">секунд</span></div>
+  </div>
+</div>
+
+<!-- Анкета гостя -->
+<div class="form-card">
+  <div class="title" style="color:white; font-size:26px; margin-bottom:20px;">АНКЕТА ГОСТЯ</div>
+  <form id="rsvpForm">
+    <input type="text" id="fullname" placeholder="Ваше ФИО *" required>
+    <select id="attendance" required>
+      <option value="">Подтвердите присутствие *</option>
+      <option value="Я буду!">Я буду!</option>
+      <option value="Нет, но отправлю подарок">Нет, но отправлю подарок</option>
+    </select>
+    <p style="font-size:13px; margin-top:-5px;">Если не можете ответить сейчас, подтвердите до 01.05.2026.</p>
+
+    <div style="margin:15px 0 10px;">Предпочтения по напиткам (можно несколько):</div>
+    <div class="check-group">
+      <label><input type="checkbox" value="шампанское"> шампанское</label>
+      <label><input type="checkbox" value="вино белое"> вино белое</label>
+      <label><input type="checkbox" value="вино красное"> вино красное</label>
+      <label><input type="checkbox" value="водка"> водка</label>
+      <label><input type="checkbox" value="коньяк"> коньяк</label>
+      <label><input type="checkbox" value="самогон"> самогон</label>
+      <label><input type="checkbox" value="безалкогольное"> безалкогольное</label>
+    </div>
+
+    <select id="transfer">
+      <option value="Да, нужен">Нужен трансфер?</option>
+      <option value="Да, нужен">Да, нужен</option>
+      <option value="Нет, не нужен">Нет, не нужен</option>
+    </select>
+
+    <textarea id="song" rows="2" placeholder="Ваш любимый трек 🎵"></textarea>
+    <textarea id="comment" rows="2" placeholder="Комментарий"></textarea>
+
+    <button type="submit" class="submit-btn">Отправить ответ</button>
+    <div class="success" id="successMessage">Спасибо! Мы ждём вас ❤️</div>
+  </form>
+  <a href="#" class="chat-link" id="chatLink"><i class="fab fa-telegram"></i> Ссылка на чат</a>
+</div>
+
+<footer>
+  Максим & Лидия<br>
+  12 августа 2026
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+// ========== КАЛЕНДАРЬ (август 2026) ==========
+function buildCalendar() {
+  const year = 2026, month = 7;
+  const firstDay = new Date(year, month, 1).getDay();
+  let startOffset = (firstDay === 0 ? 6 : firstDay - 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const grid = document.getElementById("calendarGrid");
+  grid.innerHTML = "";
+  const weekdays = ["ПН","ВТ","СР","ЧТ","ПТ","СБ","ВС"];
+  weekdays.forEach(day => {
+    let div = document.createElement("div");
+    div.textContent = day;
+    div.classList.add("weekday");
+    grid.appendChild(div);
+  });
+  for (let i = 0; i < startOffset; i++) {
+    let empty = document.createElement("div");
+    empty.classList.add("calendar-day");
+    grid.appendChild(empty);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    let dayDiv = document.createElement("div");
+    dayDiv.textContent = d;
+    dayDiv.classList.add("calendar-day");
+    if (d === 12) dayDiv.classList.add("heart-day");
+    grid.appendChild(dayDiv);
+  }
+}
+buildCalendar();
+
+// ========== ТАЙМЕР ==========
+function updateCountdown() {
+  const target = new Date("August 12, 2026 00:00:00").getTime();
+  const now = new Date().getTime();
+  const diff = target - now;
+  if(diff>0){
+    document.getElementById("days").textContent = Math.floor(diff/(1000*60*60*24));
+    document.getElementById("hours").textContent = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    document.getElementById("minutes").textContent = Math.floor((diff%(1000*60*60))/(1000*60));
+    document.getElementById("seconds").textContent = Math.floor((diff%(1000*60))/1000);
+  }
+}
+setInterval(updateCountdown,1000);
+updateCountdown();
+
+// ========== МУЗЫКАЛЬНЫЙ ПЛЕЕР ==========
+const audio = new Audio("music.mp3");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const songNameSpan = document.getElementById("songName");
+const playlist = [
+  { name: "Yes to Heaven", src: "music.mp3" },
+  { name: "Song 2", src: "music2.mp3" },
+  { name: "Song 3", src: "music3.mp3" }
+];
+let currentTrack = 0;
+let isPlaying = false;
+
+function loadTrack(index) {
+  audio.src = playlist[index].src;
+  songNameSpan.textContent = playlist[index].name;
+  audio.load();
+  if (isPlaying) {
+    audio.play().catch(e=>console.log("autoplay blocked"));
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  } else {
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  }
+}
+function togglePlay() {
+  if (isPlaying) {
+    audio.pause();
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  } else {
+    audio.play().catch(e=>console.log("play blocked"));
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  }
+  isPlaying = !isPlaying;
+}
+function prevTrack() {
+  currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+  loadTrack(currentTrack);
+  if (isPlaying) audio.play().catch(e=>console.log("play blocked"));
+}
+function nextTrack() {
+  currentTrack = (currentTrack + 1) % playlist.length;
+  loadTrack(currentTrack);
+  if (isPlaying) audio.play().catch(e=>console.log("play blocked"));
+}
+playPauseBtn.addEventListener("click", togglePlay);
+prevBtn.addEventListener("click", prevTrack);
+nextBtn.addEventListener("click", nextTrack);
+audio.addEventListener("ended", nextTrack);
+loadTrack(0);
+
+// ========== КАРТА ==========
+let mapInitialized = false;
+document.getElementById("showMapBtn").addEventListener("click", () => {
+  const mapDiv = document.getElementById("map");
+  if (mapDiv.style.display === "none") {
+    mapDiv.style.display = "block";
+    if (!mapInitialized) {
+      ymaps.ready(() => {
+        let map = new ymaps.Map("map", { center: [56.055, 37.138], zoom: 15, controls: ['zoomControl'] });
+        let placemark = new ymaps.Placemark([56.055, 37.138], { balloonContent: "О.Любви, Дмитровский гор.округ Ольгово" });
+        map.geoObjects.add(placemark);
+        mapInitialized = true;
+      });
+    }
+  } else {
+    mapDiv.style.display = "none";
+  }
+});
+document.getElementById("map").style.display = "none";
+
+// ========== S-ОБРАЗНАЯ ЛИНИЯ ДЛЯ ПРОГРАММЫ ==========
+function drawSCurve() {
+  const card = document.getElementById("programCard");
+  const svg = document.getElementById("programSvg");
+  const items = document.querySelectorAll(".program-item");
+  if (!card || !svg || items.length === 0) return;
+  const cardRect = card.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${cardRect.width} ${cardRect.height}`);
+  svg.style.width = `${cardRect.width}px`;
+  svg.style.height = `${cardRect.height}px`;
+  const points = [];
+  items.forEach(item => {
+    const timeRect = item.querySelector(".program-time").getBoundingClientRect();
+    const descRect = item.querySelector(".program-desc").getBoundingClientRect();
+    const midX = (timeRect.right + descRect.left) / 2;
+    const itemRect = item.getBoundingClientRect();
+    const y = (itemRect.top + itemRect.bottom) / 2;
+    points.push({ x: midX - cardRect.left, y: y - cardRect.top });
+  });
+  if (points.length < 2) return;
+  let pathData = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i];
+    const p2 = points[i+1];
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const ctrl1X = p1.x + dx * 0.3;
+    const ctrl1Y = p1.y + dy * 0.2;
+    const ctrl2X = p2.x - dx * 0.3;
+    const ctrl2Y = p2.y - dy * 0.2;
+    pathData += ` C ${ctrl1X} ${ctrl1Y}, ${ctrl2X} ${ctrl2Y}, ${p2.x} ${p2.y}`;
+  }
+  svg.innerHTML = '';
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", pathData);
+  path.classList.add("svg-line");
+  svg.appendChild(path);
+  points.forEach(p => {
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", p.x);
+    circle.setAttribute("cy", p.y);
+    circle.classList.add("svg-dot");
+    svg.appendChild(circle);
+  });
+}
+window.addEventListener("load", drawSCurve);
+window.addEventListener("resize", drawSCurve);
+
+// ========== ФОРМА ==========
+const form = document.getElementById("rsvpForm");
+const successMsg = document.getElementById("successMessage");
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = document.getElementById("fullname").value;
+  const attendance = document.getElementById("attendance").value;
+  if(name && attendance){
+    const drinks = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+    const transfer = document.getElementById("transfer").value;
+    const song = document.getElementById("song").value;
+    const comment = document.getElementById("comment").value;
+    localStorage.setItem("rsvpData", JSON.stringify({name, attendance, drinks, transfer, song, comment, date: new Date()}));
+    successMsg.style.display = "block";
+    form.reset();
+    setTimeout(() => successMsg.style.display = "none", 5000);
+  }
+});
+
+document.getElementById("inspirationLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  alert("Здесь будет ссылка на Pinterest / доску с образами");
+});
+document.getElementById("chatLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  alert("Ссылка на Telegram-чат: https://t.me/ваш_чат");
+});
+</script>
+</body>
+</html>
