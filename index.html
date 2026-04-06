@@ -1138,8 +1138,8 @@ footer {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script>
-  const TG_BOT_TOKEN = "8734219631:AAFAWCXELwbup3NXrX1iWvUmU1xSFRuSsME";
-const TG_CHAT_ID = "-5047917889";
+ const TG_CHAT_ID = "-5047917889";
+const TG_BOT_TOKEN = "8734219631:AAFAWCXELwbup3NXrX1iWvUmU1xSFRuSsME";
 
 async function sendToTelegram(data) {
   const text =
@@ -1152,17 +1152,16 @@ async function sendToTelegram(data) {
 🎵 Любимый трек: ${data.song || "не указано"}
 💬 Комментарий: ${data.comment || "не указано"}`;
 
-  const resp = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: TG_CHAT_ID,
-      text
-    })
-  });
+  const url =
+    `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage` +
+    `?chat_id=${encodeURIComponent(TG_CHAT_ID)}` +
+    `&text=${encodeURIComponent(text)}`;
 
+  const resp = await fetch(url, { method: "GET" });
   const result = await resp.json();
+
   if (!resp.ok || !result.ok) {
+    console.error("Telegram API error:", result);
     throw new Error(result.description || "Ошибка отправки в Telegram");
   }
 }
@@ -1407,7 +1406,6 @@ form.addEventListener("submit", async (e) => {
 
   try {
     await sendToTelegram(payload);
-    localStorage.setItem("rsvpData", JSON.stringify({ ...payload, date: new Date().toISOString() }));
     successMsg.style.display = "block";
     form.reset();
     setTimeout(() => { successMsg.style.display = "none"; }, 5000);
