@@ -596,16 +596,29 @@ textarea:focus-visible {
 }
 
 .paint-splash {
-  width: 54px;
-  height: 54px;
-  border-radius: 45% 55% 60% 40% / 48% 42% 58% 52%;
-  transform: rotate(var(--rot, 0deg));
+  position: relative;
+  width: 66px;
+  height: 44px;
+  border-radius: 26% 42% 22% 38% / 34% 26% 46% 32%;
+  transform: rotate(var(--rot, 0deg)) skewX(var(--skew, 0deg));
   box-shadow: 4px 8px 18px rgba(45, 52, 38, 0.12);
+  overflow: hidden;
 }
-.splash1 { background: #f7f4ed; border: 1px solid rgba(0,0,0,0.06); --rot: -6deg; }
-.splash2 { background: #9aaa8c; --rot: 8deg; }
-.splash3 { background: #bc9088; --rot: -4deg; }
-.splash4 { background: #c8baa2; --rot: 5deg; }
+.paint-splash::before {
+  content: "";
+  position: absolute;
+  inset: 5px 6px 7px;
+  border-radius: 30% 45% 22% 38% / 38% 24% 48% 34%;
+  background: rgba(255, 255, 255, 0.22);
+  mix-blend-mode: soft-light;
+  opacity: 0.65;
+}
+.splash1 { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.1); --rot: -8deg; --skew: -4deg; }
+.splash2 { background: #5b4632; --rot: 7deg; --skew: 3deg; }
+.splash3 { background: #d09e97; --rot: -5deg; --skew: -2deg; }
+.splash4 { background: #adbea5; --rot: 6deg; --skew: 4deg; }
+.splash5 { background: #afafaf; --rot: -4deg; --skew: 2deg; }
+.splash6 { background: #d2c4ac; --rot: 5deg; --skew: -3deg; }
 
 .inspire-link {
   font-family: var(--font-script);
@@ -969,7 +982,7 @@ footer {
   <div class="welcome-text fade-in">
     <b>ДОРОГИЕ БЛИЗКИЕ И РОДНЫЕ!</b>
     Совсем скоро в нашей жизни состоится важное событие — день свадьбы.<br>
-    Мы не представляем его без вас. Приглашаем стать частью нашего праздника и разделить радость начала новой семейной истории.
+    Мы будем счастливы разделить этот день с вами.
   </div>
 
   <div class="brush-block fade-in">
@@ -1006,9 +1019,9 @@ footer {
     <div class="program-title">Программа дня</div>
     <div class="program-list" id="programList">
       <div class="program-item"><div class="program-time">14:00</div><div class="program-desc">Сбор гостей</div></div>
-      <div class="program-item"><div class="program-time">15:00</div><div class="program-desc">Торжественная церемония</div></div>
-      <div class="program-item"><div class="program-time">16:00</div><div class="program-desc">Свадебный ужин</div></div>
-      <div class="program-item"><div class="program-time">22:00</div><div class="program-desc">Теплое завершение вечера</div></div>
+      <div class="program-item"><div class="program-time">15:00</div><div class="program-desc">Церемония</div></div>
+      <div class="program-item"><div class="program-time">16:00</div><div class="program-desc">Ужин</div></div>
+      <div class="program-item"><div class="program-time">22:00</div><div class="program-desc">Завершение</div></div>
     </div>
     <svg class="program-svg" id="programSvg" aria-hidden="true"></svg>
   </div>
@@ -1029,12 +1042,14 @@ footer {
 
   <div class="dress-card fade-in">
     <div class="dress-title">ДРЕСС-КОД</div>
-    <p>Чтобы воспоминания о свадьбе были положительными, а фотографии уникальными, просим вас придерживаться цветовой палитры нашего праздника.</p>
+    <p>Выбирайте однотонные наряды из уютных материалов и придерживайтесь цветовой палитры нашего праздника.</p>
     <div class="palette">
       <div class="paint-splash splash1"></div>
       <div class="paint-splash splash2"></div>
       <div class="paint-splash splash3"></div>
       <div class="paint-splash splash4"></div>
+      <div class="paint-splash splash5"></div>
+      <div class="paint-splash splash6"></div>
     </div>
     <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
     <a href="#" class="inspire-link" id="inspirationLink"><i class="fas fa-palette"></i> Для вдохновения →</a>
@@ -1042,9 +1057,9 @@ footer {
 
   <div class="hint-grid fade-in">
     <div class="hint-item"><h4>Что дарить?</h4><p>Мы не хотим обременять вас поисками подарка, поэтому будем рады вкладу в наш семейный бюджет. Мы просим не дарить цветы, так как наша кошка Чмоша не даст нам насладиться их красотой. Но если хочется чем-то сопроводить подарок, лучше выберите бутылочку благородного напитка для нашей домашней коллекции, здесь кошка препятствием не станет.</p></div>
-    <div class="hint-item"><h4>Формат торжества</h4><p>Дорогие гости, этот день для нас особенный и, к сожалению, не предусматривает детских зон и развлечений. Пожалуйста, позаботьтесь об этом заранее и позвольте себе отдохнуть и насладиться праздником в кругу взрослых.</p></div>
-    <div class="hint-item"><h4>Трансфер</h4><p>Для вашего удобства в конце вечера будет организован трансфер от места проведения торжества до микрорайона Левобережный. Пожалуйста, не забудьте отметить необходимость трансфера в опросе — это поможет нам сделать ваш вечер максимально комфортным.</p></div>
-    <div class="hint-item"><h4>По всем вопросам</h4><p>Дни перед праздником для нас особенно трепетны, поэтому решение всех вопросов мы делегировали нашему организатору Анне. Без стеснения обращайтесь к ней, особенно, если придумаете что-то, что должно оставаться для нас сюрпризом.</p></div>
+    <div class="hint-item"><h4>Формат торжества</h4><p>Этот день для нас особенный и, к сожалению, не предусматривает детских зон и развлечений. Пожалуйста, позаботьтесь об этом заранее и позвольте себе отдохнуть в кругу взрослых.</p></div>
+    <div class="hint-item"><h4>Трансфер</h4><p>В конце вечера будет организован трансфер от места проведения до микрорайона Левобережный. Отметьте необходимость трансфера в анкете.</p></div>
+    <div class="hint-item"><h4>По всем вопросам</h4><p>Дни перед праздником для нас особенно трепетны, поэтому решение всех вопросов мы делегировали организатору Анне. Без стеснения обращайтесь к ней.</p></div>
   </div>
   <div class="contact-oval fade-in">
     <a href="tel:+79107403171">+7 (910) 740-31-71</a>
@@ -1080,7 +1095,7 @@ footer {
     <form id="rsvpForm">
       <input type="text" id="fullname" required autocomplete="name" placeholder="Ваше ФИО *">
       <select id="attendance" required>
-        <option value="">Подтвердите присутствие. *</option>
+        <option value="">Подтвердите присутствие *</option>
         <option value="Я буду!">Я буду!</option>
         <option value="Нет, но отправлю подарок">Нет, но отправлю подарок</option>
       </select>
@@ -1369,7 +1384,7 @@ document.getElementById("inspirationLink").addEventListener("click", (e) => {
 });
 document.getElementById("chatLink").addEventListener("click", (e) => {
   e.preventDefault();
-  const chatUrl = "https://t.me/+vGwM48tcIKU3NDQy";
+  const chatUrl = "https://t.me/ваш_чат";
   window.open(chatUrl, "_blank", "noopener");
   showToast("Открыли чат в новой вкладке");
 });
