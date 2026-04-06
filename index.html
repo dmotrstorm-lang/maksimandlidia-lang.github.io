@@ -626,14 +626,43 @@ textarea:focus-visible {
   opacity: 0.65;
 }
 
-.c2  { background: #d2c4ac; --rot:  7deg; --skew:  3deg; }
-.c3  { background: #d09e97; --rot: -5deg; --skew: -2deg; }
-.c4  { background: #bea18d; --rot:  6deg; --skew:  4deg; }
-.c5  { background: #efdc9e; --rot: -4deg; --skew:  2deg; }
-.c6  { background: #60794f; --rot:  5deg; --skew: -3deg; }
-.c7  { background: #adbea5; --rot: -6deg; --skew:  2deg; }
-.c8  { background: #afafaf; --rot: -3deg; --skew:  2deg; }
-.c9 { background: #6d6954; --rot: -5deg; --skew:  3deg; }
+.dc-1 { background: #5b4532; --rot: -6deg; --skew: -2deg; }
+.dc-2 { background: #d2c4ac; --rot:  5deg; --skew:  3deg; }
+.dc-3 { background: #d09e97; --rot: -4deg; --skew: -2deg; }
+.dc-4 { background: #540b15; --rot:  4deg; --skew:  2deg; }
+.dc-5 { background: #60794f; --rot: -5deg; --skew:  3deg; }
+.dc-6 { background: #afafaf; --rot:  3deg; --skew: -2deg; }
+
+.mens-dress-block {
+  margin: 8px auto 0;
+  max-width: 520px;
+}
+.mens-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+.mens-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 4px 8px 18px rgba(45, 52, 38, 0.12);
+}
+.mens-dot--white {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.mens-dot--black {
+  background: #000000;
+}
+.mens-dress-note {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
 
 .inspire-link {
   font-family: var(--font-script);
@@ -1059,23 +1088,25 @@ footer {
   <div class="dress-title">ДРЕСС-КОД</div>
   <p>Чтобы воспоминания о свадьбе были положительными, а фотографии уникальными, просим вас придерживаться цветовой палитры нашего праздника.</p>
 
-  <div class="palette">
-    <div class="paint-splash c1" title="#5B4632"></div>
-    <div class="paint-splash c2" title="#D2C4AC"></div>
-    <div class="paint-splash c3" title="#D09E97"></div>
-    <div class="paint-splash c4" title="#BEA18D"></div>
-    <div class="paint-splash c5" title="#EFDC9E"></div>
-    <div class="paint-splash c6" title="#60794F"></div>
-    <div class="paint-splash c7" title="#ADBEA5"></div>
-    <div class="paint-splash c-white" title="#FFFFFF"></div>
-    <div class="paint-splash c8" title="#AFAFAF"></div>
-    <div class="paint-splash c-black" title="#000000"></div>
-    <div class="paint-splash c9" title="#6D6954"></div>
+   <div class="palette">
+    <div class="paint-splash dc-1" title="#5B4532"></div>
+    <div class="paint-splash dc-2" title="#D2C4AC"></div>
+    <div class="paint-splash dc-3" title="#D09E97"></div>
+    <div class="paint-splash dc-4" title="#540B15"></div>
+    <div class="paint-splash dc-5" title="#60794F"></div>
+    <div class="paint-splash dc-6" title="#AFAFAF"></div>
+  </div>
+
+  <div class="mens-dress-block">
+    <div class="mens-dots" aria-hidden="true">
+      <span class="mens-dot mens-dot--white"></span>
+      <span class="mens-dot mens-dot--black"></span>
+    </div>
+    <p class="mens-dress-note">Эти цвета только для мужчин.</p>
   </div>
 
   <p class="dress-rule">
-    Будем благодарны, если вы выберете оттенки из нашей палитры.<br>
-    
+    Будем благодарны, если вы выберете оттенки из нашей палитры для своего образа.
   </p>
 
   <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
