@@ -586,7 +586,19 @@ textarea:focus-visible {
   color: var(--ink);
 }
 .dress-card p { max-width: 520px; margin-left: auto; margin-right: auto; }
-
+.dress-rule {
+  margin-top: 18px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+.dress-rule b {
+  color: var(--ink);
+  font-weight: 600;
+}
 .palette {
   display: flex;
   justify-content: center;
@@ -613,12 +625,17 @@ textarea:focus-visible {
   mix-blend-mode: soft-light;
   opacity: 0.65;
 }
-.splash1 { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.1); --rot: -8deg; --skew: -4deg; }
-.splash2 { background: #5b4632; --rot: 7deg; --skew: 3deg; }
-.splash3 { background: #d09e97; --rot: -5deg; --skew: -2deg; }
-.splash4 { background: #adbea5; --rot: 6deg; --skew: 4deg; }
-.splash5 { background: #afafaf; --rot: -4deg; --skew: 2deg; }
-.splash6 { background: #d2c4ac; --rot: 5deg; --skew: -3deg; }
+.c1  { background: #5b4632; --rot: -8deg; --skew: -3deg; }
+.c2  { background: #d2c4ac; --rot:  7deg; --skew:  3deg; }
+.c3  { background: #d09e97; --rot: -5deg; --skew: -2deg; }
+.c4  { background: #bea18d; --rot:  6deg; --skew:  4deg; }
+.c5  { background: #efdc9e; --rot: -4deg; --skew:  2deg; }
+.c6  { background: #60794f; --rot:  5deg; --skew: -3deg; }
+.c7  { background: #adbea5; --rot: -6deg; --skew:  2deg; }
+.c8  { background: #ffffff; border: 1px solid rgba(0,0,0,.12); --rot: 4deg; --skew: -2deg; }
+.c9  { background: #afafaf; --rot: -3deg; --skew:  2deg; }
+.c10 { background: #000000; --rot:  6deg; --skew: -1deg; }
+.c11 { background: #6d6954; --rot: -5deg; --skew:  3deg; }
 
 .inspire-link {
   font-family: var(--font-script);
@@ -1044,13 +1061,23 @@ footer {
     <div class="dress-title">ДРЕСС-КОД</div>
     <p>Чтобы воспоминания о свадьбе были положительными, а фотографии уникальными, просим вас придерживаться цветовой палитры нашего праздника.</p>
     <div class="palette">
-      <div class="paint-splash splash1"></div>
-      <div class="paint-splash splash2"></div>
-      <div class="paint-splash splash3"></div>
-      <div class="paint-splash splash4"></div>
-      <div class="paint-splash splash5"></div>
-      <div class="paint-splash splash6"></div>
-    </div>
+      <p class="dress-rule">
+  Будем благодарны, если вы выберете оттенки из нашей палитры.<br>
+  Для дам просим избегать <b>чисто белого и чёрного</b> — остальные цвета из палитры с радостью приветствуются.<br>
+  <b>Чёрный</b> оставим для образов мужчин — так фотографии получатся гармоничнее.
+</p>
+  <div class="paint-splash c1" title="#5B4632"></div>
+  <div class="paint-splash c2" title="#D2C4AC"></div>
+  <div class="paint-splash c3" title="#D09E97"></div>
+  <div class="paint-splash c4" title="#BEA18D"></div>
+  <div class="paint-splash c5" title="#EFDC9E"></div>
+  <div class="paint-splash c6" title="#60794F"></div>
+  <div class="paint-splash c7" title="#ADBEA5"></div>
+  <div class="paint-splash c8" title="#FFFFFF"></div>
+  <div class="paint-splash c9" title="#AFAFAF"></div>
+  <div class="paint-splash c10" title="#000000"></div>
+  <div class="paint-splash c11" title="#6D6954"></div>
+</div>
     <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
     <a href="https://pin.it/3" class="inspire-link" id="inspirationLink"><i class="fas fa-palette"></i> Для вдохновения →</a>
   </div>
