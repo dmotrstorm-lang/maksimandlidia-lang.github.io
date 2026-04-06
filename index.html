@@ -1138,6 +1138,34 @@ footer {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script>
+  const TG_BOT_TOKEN = "СЮДА_ТОКЕН_БОТА";
+const TG_CHAT_ID = "СЮДА_CHAT_ID";
+
+async function sendToTelegram(data) {
+  const text =
+`📩 Новая анкета гостя
+
+👤 ФИО: ${data.name}
+✅ Присутствие: ${data.attendance}
+🍷 Напитки: ${data.drinks.length ? data.drinks.join(", ") : "не указано"}
+🚌 Трансфер: ${data.transfer || "не указано"}
+🎵 Любимый трек: ${data.song || "не указано"}
+💬 Комментарий: ${data.comment || "не указано"}`;
+
+  const resp = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: TG_CHAT_ID,
+      text
+    })
+  });
+
+  const result = await resp.json();
+  if (!resp.ok || !result.ok) {
+    throw new Error(result.description || "Ошибка отправки в Telegram");
+  }
+}
 const intro = document.getElementById('intro');
 const mainContent = document.getElementById('mainContent');
 document.getElementById('enterBtn').addEventListener('click', async () => {
@@ -1363,19 +1391,29 @@ function showToast(message) {
   }, 2600);
 }
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const name = document.getElementById("fullname").value;
+
+  const name = document.getElementById("fullname").value.trim();
   const attendance = document.getElementById("attendance").value;
-  if (name && attendance) {
-    const drinks = Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-    const transfer = document.getElementById("transfer").value;
-    const song = document.getElementById("song").value;
-    const comment = document.getElementById("comment").value;
-    localStorage.setItem("rsvpData", JSON.stringify({ name, attendance, drinks, transfer, song, comment, date: new Date() }));
+  if (!name || !attendance) return;
+
+  const drinks = Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+  const transfer = document.getElementById("transfer").value;
+  const song = document.getElementById("song").value.trim();
+  const comment = document.getElementById("comment").value.trim();
+
+  const payload = { name, attendance, drinks, transfer, song, comment };
+
+  try {
+    await sendToTelegram(payload);
+    localStorage.setItem("rsvpData", JSON.stringify({ ...payload, date: new Date().toISOString() }));
     successMsg.style.display = "block";
     form.reset();
     setTimeout(() => { successMsg.style.display = "none"; }, 5000);
+  } catch (err) {
+    console.error(err);
+    showToast("Ошибка отправки в Telegram");
   }
 });
 document.getElementById("inspirationLink").addEventListener("click", (e) => {
