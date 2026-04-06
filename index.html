@@ -837,6 +837,16 @@ footer {
 }
 
 @media (max-width: 480px) {
+  .photos {
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .photo-wrap {
+    flex: 0 0 auto;
+    padding: 8px 8px 11px;
+  }
   .side-photo { width: 82px; height: 106px; }
   .center-photo { width: 96px; height: 124px; }
   .photo-wrap--center { transform: translateY(8px); }
@@ -845,6 +855,11 @@ footer {
   .place-card { font-size: 13px; max-width: 200px; }
 }
 @media (max-width: 380px) {
+  .photos { gap: 6px; }
+  .photo-wrap { padding: 7px 7px 10px; }
+  .side-photo { width: 72px; height: 94px; }
+  .center-photo { width: 84px; height: 110px; }
+  .photo-wrap--center { transform: translateY(6px); }
   .check-group label { white-space: normal; }
 }
 
