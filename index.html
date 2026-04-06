@@ -277,6 +277,10 @@ textarea:focus-visible {
   flex-wrap: wrap;
 }
 
+.photos.photo-intro-hidden {
+  opacity: 0;
+}
+
 .photo-wrap {
   position: relative;
   padding: 10px 10px 14px;
@@ -836,6 +840,46 @@ footer {
   transform: translateX(-50%) translateY(0);
 }
 
+.photo-sequence {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 18, 16, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.photo-sequence.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.photo-sequence img {
+  width: min(88vw, 520px);
+  max-height: 86vh;
+  object-fit: cover;
+  border-radius: 22px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+  transform: scale(1.06);
+  opacity: 0;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.photo-sequence img.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.photo-sequence img.hide {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
 @media (max-width: 480px) {
   .photos {
     flex-wrap: nowrap;
@@ -902,7 +946,7 @@ footer {
 
   <h1 class="hero-names fade-in"><span>Максим</span> &amp; <span>Лидия</span></h1>
 
-  <div class="photos fade-in">
+  <div class="photos fade-in photo-intro-hidden" id="photosBlock">
     <div class="photo-wrap">
       <img src="https://i.pinimg.com/736x/47/6e/c5/476ec56b391f5012449f200ec773bfcc.jpg" class="photo side-photo" alt="Максим" width="100" height="128" loading="lazy">
     </div>
@@ -1073,19 +1117,68 @@ footer {
 </div>
 </div>
 
+<div class="photo-sequence" id="photoSequence" aria-hidden="true">
+  <img id="photoSequenceImage" alt="Фото пары">
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script>
 const intro = document.getElementById('intro');
 const mainContent = document.getElementById('mainContent');
-document.getElementById('enterBtn').addEventListener('click', () => {
+document.getElementById('enterBtn').addEventListener('click', async () => {
   intro.classList.add('hide');
   setTimeout(() => {
     intro.style.display = 'none';
     mainContent.style.display = 'block';
-    initObserver();
-    setTimeout(drawSCurve, 100);
+    runPhotoIntroSequence().finally(() => {
+      initObserver();
+      setTimeout(drawSCurve, 100);
+    });
   }, 900);
 });
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function runPhotoIntroSequence() {
+  const photosBlock = document.getElementById("photosBlock");
+  const sequence = document.getElementById("photoSequence");
+  const sequenceImage = document.getElementById("photoSequenceImage");
+  if (!photosBlock || !sequence || !sequenceImage) return;
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) {
+    photosBlock.classList.remove("photo-intro-hidden");
+    photosBlock.classList.add("show");
+    return;
+  }
+
+  const photoUrls = Array.from(photosBlock.querySelectorAll("img")).map((img) => img.src);
+  if (!photoUrls.length) {
+    photosBlock.classList.remove("photo-intro-hidden");
+    photosBlock.classList.add("show");
+    return;
+  }
+
+  sequence.classList.add("active");
+
+  for (const src of photoUrls) {
+    sequenceImage.src = src;
+    sequenceImage.classList.remove("hide");
+    await wait(60);
+    sequenceImage.classList.add("show");
+    await wait(900);
+    sequenceImage.classList.remove("show");
+    sequenceImage.classList.add("hide");
+    await wait(320);
+  }
+
+  sequence.classList.remove("active");
+  sequenceImage.classList.remove("show", "hide");
+  photosBlock.classList.remove("photo-intro-hidden");
+  photosBlock.classList.add("show");
+}
 
 function initObserver() {
   const els = document.querySelectorAll('.fade-in');
