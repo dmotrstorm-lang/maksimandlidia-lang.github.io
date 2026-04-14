@@ -645,22 +645,17 @@ textarea:focus-visible {
   margin-top: 10px;
 }
 .mens-dot {
-  width: 48px;
-  height: 48px;
-  box-shadow: 4px 10px 22px rgba(45, 52, 38, 0.15);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 4px 8px 18px rgba(45, 52, 38, 0.12);
 }
-
 .mens-dot--white {
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 58% 42% 52% 48% / 46% 54% 48% 52%;
-  transform: rotate(-8deg) skewX(-3deg);
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
-
 .mens-dot--black {
   background: #000000;
-  border-radius: 46% 54% 64% 36% / 52% 44% 56% 48%;
-  transform: rotate(9deg) skewX(4deg);
 }
 .mens-dress-note {
   margin-top: 12px;
@@ -1056,7 +1051,7 @@ footer {
     <div class="place-card">
       <strong>О.Любви</strong><br>
       по адресу<br>
-      Дмитровский гор.округ Ольгово
+      Весенняя улица, дом 9, Благовещенка, Московская обл., 141544
     </div>
     <img src="https://i.pinimg.com/1200x/a5/13/4e/a5134ea162ba6c2c35ef478791714755.jpg" class="place-img" alt="Место проведения" loading="lazy">
     <button type="button" class="map-btn" id="showMapBtn">Показать карту</button>
@@ -1090,7 +1085,7 @@ footer {
 
   <div class="dress-card fade-in">
   <div class="dress-title">ДРЕСС-КОД</div>
-  <p>Чтобы воспоминания о свадьбе были положительными, а фотографии уникальными, просим вас при выборе наряда придерживаться цветовой палитры нашего праздника.</p>
+  <p>Чтобы воспоминания о свадьбе были положительными, а фотографии уникальными, просим вас придерживаться цветовой палитры нашего праздника.</p>
 
    <div class="palette">
     <div class="paint-splash dc-1" title="#5B4532"></div>
@@ -1109,7 +1104,11 @@ footer {
     <p class="mens-dress-note">Эти цвета только для мужчин.</p>
   </div>
 
-  <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учитывайте погоду, но помните, что на улице лето.</p>
+  <p class="dress-rule">
+    Будем благодарны, если вы выберете оттенки из нашей палитры для своего образа.
+  </p>
+
+  <p><i class="fas fa-leaf"></i> Праздник будет проходить внутри и на открытом воздухе. Учтите погоду, но помните, что на улице лето.</p>
   <a href="https://pin.it/3HOoiQlzQ" class="inspire-link" id="inspirationLink" target="_blank" rel="noopener noreferrer"><i class="fas fa-palette"></i> Для вдохновения →</a>
 </div>
   <div class="hint-grid fade-in">
@@ -1119,10 +1118,9 @@ footer {
     <div class="hint-item"><h4>По всем вопросам</h4><p>Дни перед праздником для нас особенно трепетны, поэтому решение всех вопросов мы делегировали нашему организатору Анне. Без стеснения обращайтесь к ней, особенно, если придумаете что-то, что должно оставаться для нас сюрпризом.</p></div>
   </div>
   <div class="contact-oval fade-in">
-  <a href="https://t.me/solovey_ann" target="_blank" rel="noopener noreferrer">@solovey_ann</a>
-</div>
-  
-  <div class="contact-name fade-in">+7 910 740 3171</div>
+    <a href="tel:+79107403171">+7 (910) 740-31-71</a>
+  </div>
+  <div class="contact-name fade-in">Анна</div>
 
   <div class="brush-block fade-in">
     <svg class="brush-svg" viewBox="0 0 400 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1157,7 +1155,7 @@ footer {
         <option value="Я буду!">Я буду!</option>
         <option value="Нет, но отправлю подарок">Нет, но отправлю подарок</option>
       </select>
-      <p class="section-note">Если не можете ответить сейчас, подтвердите до 01.06.2026.</p>
+      <p class="section-note">Если не можете ответить сейчас, подтвердите до 01.05.2026.</p>
       <div class="inline-label">Предпочтения по напиткам (можно несколько):</div>
       <div class="check-group">
         <label><input type="checkbox" value="шампанское"> шампанское</label>
@@ -1374,14 +1372,16 @@ loadTrack(0);
 
 let mapInitialized = false;
 const mapDiv = document.getElementById("map");
+const venueAddress = "Весенняя улица, дом 9, Благовещенка, Московская обл., 141544";
+const venueCoords = [56.273348, 37.343563];
 document.getElementById("showMapBtn").addEventListener("click", function () {
   if (mapDiv.style.display === "none" || !mapDiv.style.display) {
     mapDiv.style.display = "block";
     this.textContent = "Скрыть карту";
     if (!mapInitialized) {
       ymaps.ready(() => {
-        const map = new ymaps.Map("map", { center: [56.055, 37.138], zoom: 15, controls: ["zoomControl"] });
-        map.geoObjects.add(new ymaps.Placemark([56.055, 37.138], { balloonContent: "О.Любви, Дмитровский гор.округ Ольгово" }));
+        const map = new ymaps.Map("map", { center: venueCoords, zoom: 16, controls: ["zoomControl"] });
+        map.geoObjects.add(new ymaps.Placemark(venueCoords, { balloonContent: `О.Любви, ${venueAddress}` }));
         mapInitialized = true;
       });
     }
@@ -1476,10 +1476,4 @@ form.addEventListener("submit", async (e) => {
 
 document.getElementById("chatLink").addEventListener("click", (e) => {
   e.preventDefault();
-  const chatUrl = "https://t.me/+vGwM48tcIKU3NDQy";
-  window.open(chatUrl, "_blank", "noopener");
-  showToast("Открыли чат в новой вкладке");
-});
-</script>
-</body>
-</html>
+  const chatUrl = "https://t.me/+vGw
